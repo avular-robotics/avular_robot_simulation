@@ -1,0 +1,26 @@
+services:
+  sim:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        ROS_DISTRO: ${ROS_DISTRO:-humble}
+    image: avular_simulations:${ROS_DISTRO:-humble}
+    container_name: avular-sim-${ROS_DISTRO:-humble}
+    runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=0
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+      # docker-compose.yml is at <workspace>/src/avular_simulations/docker/,
+      # so ../.. is <workspace>/src/ which contains the three repos.
+      - ../..:/root/ros2_ws/src:rw
+    stdin_open: true
+    tty: true
+    network_mode: host
