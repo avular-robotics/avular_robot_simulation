@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>avular_simulations</name>
+  <version>0.1.0</version>
+  <description>Combined Gazebo simulation package for Avular Origin and Vertex: worlds, models, per-robot launch files, ROS/Gazebo bridge configs, and the top-level bringup that spawns both robots together.</description>
+  <maintainer email="info@avular.com">Avular Robotics</maintainer>
+  <license>proprietary</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <depend>cmd_vel_controller</depend>
+  <depend>origin_one_description</depend>
+  <depend>vertex_one_description</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf2_ros</depend>
+
+  <exec_depend>gz_bridge_plugin_gnss</exec_depend>
+  <exec_depend>gz_bridge_plugin_state_reference</exec_depend>
+  <exec_depend>gz_bridge_plugins</exec_depend>
+  <exec_depend>gz_plugin_gnss_obstruction</exec_depend>
+  <exec_depend>gz_plugin_optical_flow</exec_depend>
+  <exec_depend>gz_plugin_point_lidar</exec_depend>
+  <exec_depend>gz_plugin_starling</exec_depend>
+  <exec_depend>gz_plugin_vertex_control</exec_depend>
+  <exec_depend>avular_gz_resources</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>uav_mocks</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

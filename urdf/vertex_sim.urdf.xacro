@@ -1,0 +1,179 @@
+<?xml version='1.0'?>
+
+<!--
+Simulation overlay for the Vertex One. Includes hardware description from 
+vertex_one_description and Gazebo plugins for simulating sensors and drive. -->
+
+<robot name="avular_vertex_one_sim" xmlns:xacro="http://ros.org/wiki/xacro" xmlns:gz="http://sdformat.org/schemas/root.xsd">
+
+
+  <xacro:arg name="prefix" default=""/>
+  <xacro:arg name="namespace" default="robot"/>
+
+  <xacro:property name="prefix" value="$(arg prefix)"/>
+  <xacro:property name="P" value="${prefix + ('_' if prefix else '')}"/>
+  <xacro:property name="namespace" value="$(arg namespace)"/>
+
+  <xacro:include filename="$(find vertex_one_description)/urdf/vertex_one.urdf.xacro"/>
+
+  <xacro:macro name="rotor_props" params="suffix">
+    <gazebo reference="${P}rotor_${suffix}">
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="rotor_joint_props" params="suffix">
+    <gazebo reference="${P}rotor_${suffix}_joint"> </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="rotor_motor" params="suffix dir num">
+    <plugin filename="gz-sim-multicopter-motor-model-system"
+      name="gz::sim::systems::MulticopterMotorModel">
+      <robotNamespace>${namespace}</robotNamespace>
+      <jointName>${P}rotor_${suffix}_joint</jointName>
+      <linkName>${P}rotor_${suffix}</linkName>
+      <turningDirection>${dir}</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>800.0</maxRotVelocity>
+      <motorConstant>8.54858e-06</motorConstant>
+      <momentConstant>0.016</momentConstant>
+      <commandSubTopic>motor_speed</commandSubTopic>
+      <motorNumber>${num}</motorNumber>
+      <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic>motor_speed/${num}</motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      <motorType>velocity</motorType>
+    </plugin>
+  </xacro:macro>
+
+  <xacro:macro name="rotor_config" params="suffix dir">
+    <rotor>
+      <jointName>${P}rotor_${suffix}_joint</jointName>
+      <forceConstant>8.54858e-06</forceConstant>
+      <momentConstant>0.016</momentConstant>
+      <direction>${dir}</direction>
+    </rotor>
+  </xacro:macro>
+
+  <xacro:rotor_props suffix="FL"/>
+  <xacro:rotor_props suffix="FR"/>
+  <xacro:rotor_props suffix="RL"/>
+  <xacro:rotor_props suffix="RR"/>
+
+  <xacro:rotor_joint_props suffix="FL"/>
+  <xacro:rotor_joint_props suffix="FR"/>
+  <xacro:rotor_joint_props suffix="RL"/>
+  <xacro:rotor_joint_props suffix="RR"/>
+
+  <gazebo reference="${P}imu_link">
+    <sensor name="imu" type="imu">
+      <gz_frame_id>${P}imu_link</gz_frame_id>
+      <topic>/${namespace}/imu</topic>
+      <update_rate>100</update_rate>
+      <always_on>1</always_on>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
+  <!-- Magnetometer is co-located with the IMU. -->
+  <gazebo reference="${P}imu_link">
+    <sensor name="magnetometer" type="magnetometer">
+      <gz_frame_id>${P}imu_link</gz_frame_id>
+      <topic>/${namespace}/magnetometer</topic>
+      <update_rate>100</update_rate>
+      <always_on>1</always_on>
+      <magnetometer>
+        <x><noise type="gaussian"><mean>0</mean><stddev>0.1</stddev></noise></x>
+        <y><noise type="gaussian"><mean>0</mean><stddev>0.1</stddev></noise></y>
+        <z><noise type="gaussian"><mean>0</mean><stddev>0.1</stddev></noise></z>
+      </magnetometer>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="${P}gnss_link">
+    <sensor name="navsat" type="navsat">
+      <gz_frame_id>${P}gnss_link</gz_frame_id>
+      <topic>/${namespace}/gnss</topic>
+      <update_rate>10</update_rate>
+      <always_on>1</always_on>
+      <gps>
+        <position_sensing>
+          <horizontal>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0001</stddev>
+            </noise>
+          </horizontal>
+          <vertical>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0001</stddev>
+            </noise>
+          </vertical>
+        </position_sensing>
+      </gps>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+      <topic>/${namespace}/joint_states</topic>
+    </plugin>
+
+    <xacro:rotor_motor suffix="FL" dir="ccw" num="0"/>
+    <xacro:rotor_motor suffix="FR" dir="cw"  num="1"/>
+    <xacro:rotor_motor suffix="RL" dir="cw"  num="2"/>
+    <xacro:rotor_motor suffix="RR" dir="ccw" num="3"/>
+
+    <plugin
+      filename="gz-sim-multicopter-control-system"
+      name="gz::sim::systems::MulticopterVelocityControl">
+      <robotNamespace>${namespace}</robotNamespace>
+      <commandSubTopic>cmd_vel</commandSubTopic>
+      <enableSubTopic>enable</enableSubTopic>
+      <comLinkName>${P}base_link</comLinkName>
+      <velocityGain>2.7 2.7 2.7</velocityGain>
+      <attitudeGain>2 3 0.15</attitudeGain>
+      <angularRateGain>0.4 0.52 0.18</angularRateGain>
+      <maximumLinearAcceleration>2 2 2</maximumLinearAcceleration>
+
+      <rotorConfiguration>
+        <xacro:rotor_config suffix="FL" dir="1"/>
+        <xacro:rotor_config suffix="FR" dir="-1"/>
+        <xacro:rotor_config suffix="RL" dir="-1"/>
+        <xacro:rotor_config suffix="RR" dir="1"/>
+      </rotorConfiguration>
+    </plugin>
+
+    <plugin
+      filename="gz-sim-odometry-publisher-system"
+      name="gz::sim::systems::OdometryPublisher">
+      <odom_topic>/${namespace}/odom</odom_topic>
+      <odom_covariance_topic>/${namespace}/odom_with_covariance</odom_covariance_topic>
+      <tf_topic>/${namespace}/tf</tf_topic>
+      <odom_frame>${P}odom</odom_frame>
+      <robot_base_frame>${P}base_link</robot_base_frame>
+      <dimensions>3</dimensions>
+      <xyz_offset>0 0 0</xyz_offset>
+      <rpy_offset>0 0 0</rpy_offset>
+      <gaussian_noise>0.001</gaussian_noise>
+      <odom_publish_frequency>30</odom_publish_frequency>
+    </plugin>
+  </gazebo>
+
+</robot>
