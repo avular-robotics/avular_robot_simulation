@@ -1,0 +1,20 @@
+# GitHub
+.git/
+.github/
+*.md
+LICENSE
+
+# Python
+**/__pycache__/
+**/*.pyc
+
+# Editors
+.vscode/
+
+# ROS 2 / colcon
+build/*
+install/*
+log/*
+
+# OS
+.DS_Store
