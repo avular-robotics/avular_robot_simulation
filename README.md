@@ -32,12 +32,12 @@ Make a ROS workspace on your computer (for instructions, see the [ROS tutorial](
 ```bash
 cd <your-ros-workspace>/src
 
-git clone -b jazzy git@github.com:avular-robotics/private_vertex_description.git
-git clone -b parametric_description git@github.com:avular-robotics/origin_description.git
-git clone -b public_description git@github.com:avular-robotics/uav_descriptions.git
+git clone -b jazzy git@github.com:avular-robotics/avular_robot_simulation.git
+git clone -b main git@github.com:avular-robotics/avular_origin_description.git
+git clone -b main git@github.com:avular-robotics/avular_uav_descriptions.git
 
-cd origin_description && git lfs pull && cd ..
-cd uav_descriptions && git lfs pull && cd ..
+cd avular_origin_description && git lfs pull && cd ..
+cd avular_uav_descriptions && git lfs pull && cd ..
 ```
 
 Install the remaining ROS dependencies via rosdep, then build:
@@ -95,19 +95,19 @@ Set up your workspace and clone the three repositories:
 ```bash
 mkdir -p ~/avular_ws/src && cd ~/avular_ws/src
 
-git clone -b jazzy git@github.com:avular-robotics/private_vertex_description.git
-git clone -b parametric_description git@github.com:avular-robotics/origin_description.git
-git clone -b public_description git@github.com:avular-robotics/uav_descriptions.git
+git clone -b jazzy git@github.com:avular-robotics/avular_robot_simulation.git
+git clone -b main git@github.com:avular-robotics/avular_origin_description.git
+git clone -b main git@github.com:avular-robotics/avular_uav_descriptions.git
 
-cd origin_description && git lfs pull && cd ..
-cd uav_descriptions && git lfs pull && cd ..
+cd avular_origin_description && git lfs pull && cd ..
+cd avular_uav_descriptions && git lfs pull && cd ..
 ```
 
 Allow Docker containers to connect to your X server, then start the container:
 
 ```bash
 xhost +local:docker
-cd ~/avular_ws/src/private_vertex_description
+cd ~/avular_ws/src/avular_robot_simulation
 docker compose -f docker/docker-compose.yml up -d --build
 ```
 
