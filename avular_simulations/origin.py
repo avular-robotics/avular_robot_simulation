@@ -105,15 +105,16 @@ def spawn_origin(ld: LaunchDescription):
     ld.add_action(
         Node(
             package="avular_simulations",
-            executable="robot_specifics",
+            executable="origin_mocks",
             namespace=["/", LaunchConfiguration("ns")],
+            parameters=[{"tf_prefix": LaunchConfiguration("tf_prefix")}],
             output="screen",
         )
     )
 
     ld.add_action(
         Node(
-            package="cmd_vel_controller",
+            package="avular_cmd_vel_controller",
             executable="cmd_vel_controller",
             name="cmd_vel_controller",
             namespace=LaunchConfiguration("ns"),
@@ -123,6 +124,35 @@ def spawn_origin(ld: LaunchDescription):
             respawn=True,
             respawn_delay=1.0,
             condition=IfCondition(LaunchConfiguration("use_cmd_vel_controller")),
+        )
+    )
+
+    ld.add_action(
+        Node(
+            package="joy",
+            executable="joy_node",
+            name="joy_node",
+            namespace=LaunchConfiguration("ns"),
+            parameters=[{"device_id": 0, "deadzone": 0.05}],
+            respawn=True,
+            respawn_delay=2.0,
+            condition=IfCondition(LaunchConfiguration("use_joy")),
+        )
+    )
+
+    # No respawn: joy_interpreter throws if the Joy message carries fewer buttons than its
+    # mapping expects, and a respawn loop would bury that in the launch log.
+    ld.add_action(
+        Node(
+            package="avular_joy_interpreter",
+            executable="joy_interpreter",
+            name="joy_interpreter",
+            namespace=LaunchConfiguration("ns"),
+            parameters=[
+                os.path.join(pkg_share, "config", "origin", "joy_interpreter.yaml")
+            ],
+            output="screen",
+            condition=IfCondition(LaunchConfiguration("use_joy")),
         )
     )
 

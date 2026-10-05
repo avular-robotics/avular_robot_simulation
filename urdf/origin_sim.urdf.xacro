@@ -133,6 +133,42 @@ origin_one_description and Gazebo plugins for simulating sensors and drive. -->
     </sensor>
   </gazebo>
 
+  <!-- Ouster OS1-32 built-in IMU. Sim-only carrier link at the os_imu offset;
+       data is stamped in os_imu (published as a static TF in origin.py). -->
+  <link name="${P}os_imu_link_gazebo">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+
+  <joint type="fixed" name="${P}os_imu_joint_gazebo">
+    <origin xyz="0.006253 -0.011775 0.007645" rpy="0 0 0"/>
+    <parent link="${P}os_sensor"/>
+    <child link="${P}os_imu_link_gazebo"/>
+  </joint>
+
+  <gazebo reference="${P}os_imu_link_gazebo">
+    <sensor name="os_imu" type="imu">
+      <ignition_frame_id>${P}os_imu</ignition_frame_id>
+      <topic>/${namespace}/lidar/imu</topic>
+      <update_rate>100</update_rate>
+      <always_on>1</always_on>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
   <gazebo reference="${P}camera_link">
     <sensor name="realsense_d435" type="rgbd_camera">
       <ignition_frame_id>${P}camera_link</ignition_frame_id>

@@ -10,13 +10,16 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_python</buildtool_depend>
 
-  <depend>cmd_vel_controller</depend>
+  <depend>avular_cmd_vel_controller</depend>
+  <depend>avular_joy_interpreter</depend>
   <depend>origin_one_description</depend>
   <depend>vertex_one_description</depend>
   <depend>ros_gz_sim</depend>
   <depend>ros_gz_bridge</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>avular_origin_msgs</depend>
   <depend>std_srvs</depend>
   <depend>tf2_ros</depend>
 
@@ -30,7 +33,6 @@
   <exec_depend>gz_plugin_vertex_control</exec_depend>
   <exec_depend>avular_gz_resources</exec_depend>
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>uav_mocks</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
