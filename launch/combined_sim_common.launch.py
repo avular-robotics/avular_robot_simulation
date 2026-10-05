@@ -28,6 +28,10 @@ def generate_launch_description():
     ld.add_action(DeclareLaunchArgument("headless", default_value="false"))
     ld.add_action(DeclareLaunchArgument("launch_world", default_value="true"))
     ld.add_action(DeclareLaunchArgument("rviz", default_value="false"))
+    ld.add_action(
+        DeclareLaunchArgument("use_cmd_vel_controller", default_value="False")
+    )
+    ld.add_action(DeclareLaunchArgument("use_joy", default_value="False"))
     ld.add_action(DeclareLaunchArgument("origin_pose_x", default_value="-19.0"))
     ld.add_action(DeclareLaunchArgument("origin_pose_y", default_value="-36.0"))
     ld.add_action(DeclareLaunchArgument("origin_pose_yaw", default_value="1.57"))
@@ -67,6 +71,10 @@ def generate_launch_description():
                 "robot_pose_x": LaunchConfiguration("origin_pose_x"),
                 "robot_pose_y": LaunchConfiguration("origin_pose_y"),
                 "robot_pose_yaw": LaunchConfiguration("origin_pose_yaw"),
+                "use_cmd_vel_controller": LaunchConfiguration(
+                    "use_cmd_vel_controller"
+                ),
+                "use_joy": LaunchConfiguration("use_joy"),
                 "rviz": LaunchConfiguration("rviz"),
             }.items(),
         )
