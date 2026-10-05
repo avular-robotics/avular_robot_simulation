@@ -41,6 +41,7 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument("use_cmd_vel_controller", default_value="False")
     )
+    ld.add_action(DeclareLaunchArgument("use_joy", default_value="False"))
     ld.add_action(DeclareLaunchArgument("robot_pose_x", default_value="-19.0"))
     ld.add_action(DeclareLaunchArgument("robot_pose_y", default_value="-36.0"))
     ld.add_action(DeclareLaunchArgument("robot_pose_yaw", default_value="1.57"))

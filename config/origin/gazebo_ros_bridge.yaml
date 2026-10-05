@@ -34,9 +34,8 @@
   direction:
     GZ_TO_ROS
 
-# gz topic published by NavSat plugin. ROS topic name uses fix_off to disable
-# routing to any subscriber — rename to /robot/gnss/fix to activate.
-- ros_topic_name: "/robot/gnss/fix_off"
+# gz topic published by NavSat plugin
+- ros_topic_name: "/robot/gnss/fix"
   gz_topic_name: "/robot/gnss"
   ros_type_name: "sensor_msgs/msg/NavSatFix"
   gz_type_name: "gz.msgs.NavSat"
@@ -48,6 +47,13 @@
 
 # gz topic published by RGBD camera plugin (RealSense D435)
 - ros_topic_name: "/robot/camera/color/camera_info"
+  gz_topic_name: "/robot/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+# duplicate camera_info topic to mimic the real Realsense driver on the origin
+- ros_topic_name: "/robot/camera/depth/camera_info"
   gz_topic_name: "/robot/camera/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"
@@ -73,8 +79,12 @@
   direction:
     GZ_TO_ROS
 
-- ros_topic_name: "/robot/camera/depth/points"
-  gz_topic_name: "/robot/camera/points"
+# The rgbd_camera sensor also emits a depth pointcloud on gz /robot/camera/points,
+# but it is deliberately NOT bridged: the real Origin does not expose one
+
+# gz topic published by GPU Lidar plugin (Ouster OS1, 32-beam)
+- ros_topic_name: "/robot/lidar/points"
+  gz_topic_name: "/robot/lidar/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   subscriber_queue: 1
@@ -83,11 +93,11 @@
   direction:
     GZ_TO_ROS
 
-# gz topic published by GPU Lidar plugin (Ouster OS1, 32-beam)
-- ros_topic_name: "/robot/lidar/points"
-  gz_topic_name: "/robot/lidar/points"
-  ros_type_name: "sensor_msgs/msg/PointCloud2"
-  gz_type_name: "gz.msgs.PointCloudPacked"
+# gz topic published by the Ouster OS1-32 built-in IMU sensor
+- ros_topic_name: "/robot/lidar/imu"
+  gz_topic_name: "/robot/lidar/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
   subscriber_queue: 1
   publisher_queue: 1
   lazy: true
