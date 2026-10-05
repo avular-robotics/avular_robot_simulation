@@ -1,0 +1,17 @@
+/**:
+  ros__parameters:
+    # Topics
+    joy_topic: joy                    # [input] from Joy reader node (sensor_msgs::msg::Joy)
+    control_mode_topic: control_mode  # [input] from CmdVelController node (origin_msgs::msg::ControlMode)
+    twist_topic: cmd_vel_joy          # [output] Control command topic (geometry_msgs::msg::Twist)
+
+    # Tuning parameters
+    gain_linear_x: 1.0 # [-] Gain for linear motion on joystick paddle
+    gain_linear_y: 0.3 # [-] Gain for linear motion on joystick paddle
+    gain_yaw: 0.7 # [-] Gain for angular motion on joystick paddle
+    turbo_gain_linear_x: 2.0 # [-] Gain for linear motion on turbo mode
+    turbo_gain_linear_y: 0.6 # [-] Gain for linear motion on turbo mode
+    turbo_gain_yaw: 2.0 # [-] Gain for angular motion on turbo mode
+
+    joy_input_timeout: 2.0  #[s] Interval between current clock time and last received joystick input
+    use_ps4_controller_mapping: true
